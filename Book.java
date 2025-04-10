@@ -15,7 +15,47 @@ public class Book {
 
     }
 
-    
+    public boolean checkOut(String studentName) {
+        if (isCheckedOut()) {
+            try {throw new IllegalStateException();}
+
+            catch (IllegalStateException e) {
+                System.out.println("ERROR: you have encountered " + e.getMessage());
+            }
+        }
+
+        try {
+            setCheckedOut(true);
+            setBorrower(studentName);
+            //setDueDate();
+        } catch (IllegalArgumentException e) {
+            System.out.println("You have encountered " + e.getMessage());
+        }
+
+        System.out.println("Checkout state: ");
+        return true;
+
+    }
+
+    public void turnIn() {
+        if (isCheckedOut()) {
+            try{throw new IllegalStateException();}
+
+            catch (IllegalArgumentException e) {
+                System.out.println("You have encountered " + e.getMessage());
+            }
+        }
+
+        setCheckedOut(false);
+        setBorrower(null);
+        setDueDate(null);
+
+    }
+
+    public String toString() {
+        return ();
+    }
+
 
     public String getTitle() {
         return title;
