@@ -53,7 +53,13 @@ public class Book {
     }
 
     public String toString() {
-        return ();
+        String checkedOut = "No";
+
+        if (isCheckedOut()) {
+            checkedOut = "Yes";
+        }
+
+        return (getTitle() + ", " + getAuthor() + ", Checked out: " + checkedOut);
     }
 
 
