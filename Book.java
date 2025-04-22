@@ -1,3 +1,5 @@
+import java.time.LocalDate;
+
 public class Book {
     private String title;
     private String author;
@@ -6,50 +8,38 @@ public class Book {
     private LocalDate dueDate = null;
 
     public Book(String title, String author) {
-        try {
-            this.title = title;
-            this.author = author;
-        } catch (IllegalArgumentException e) {
-            System.out.println("ERROR: your mistake was " + e.getMessage());
+        if (title == null || title.isEmpty() || author == null || author.isEmpty()) {
+            throw new IllegalArgumentException("Title or author cannot be null or empty");
         }
-
+        this.title = title;
+        this.author = author;
     }
 
     public boolean checkOut(String studentName) {
         if (isCheckedOut()) {
-            try {throw new IllegalStateException();}
-
-            catch (IllegalStateException e) {
-                System.out.println("ERROR: you have encountered " + e.getMessage());
-            }
+            throw new IllegalStateException("Book is already checked out");
         }
 
-        try {
-            setCheckedOut(true);
-            setBorrower(studentName);
-            //setDueDate();
-        } catch (IllegalArgumentException e) {
-            System.out.println("You have encountered " + e.getMessage());
+        if (studentName == null || studentName.isEmpty()) {
+            throw new IllegalArgumentException("Student name cannot be null or empty");
         }
+
+        setCheckedOut(true);
+        setBorrower(studentName);
+        setDueDate(LocalDate.now().plusDays(14));
 
         System.out.println("Checkout state: ");
         return true;
-
     }
 
     public void turnIn() {
-        if (isCheckedOut()) {
-            try{throw new IllegalStateException();}
-
-            catch (IllegalArgumentException e) {
-                System.out.println("You have encountered " + e.getMessage());
-            }
+        if (!isCheckedOut()) {
+            throw new IllegalStateException("Book is not checked out");
         }
 
         setCheckedOut(false);
         setBorrower(null);
         setDueDate(null);
-
     }
 
     public String toString() {
