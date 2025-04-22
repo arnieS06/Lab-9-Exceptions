@@ -3,6 +3,11 @@ public class Library {
     private int bookCount;
     private final int MAX_BOOKS = 1000;
 
+    public Library() {
+        this.books = new Book[MAX_BOOKS];
+        this.bookCount = 0;
+    }
+
     public int getBooksIndex() {
         for (int n = 0; n < books.length; n++) {
             if (books[n] == null) {
@@ -13,8 +18,19 @@ public class Library {
     }
 
     public boolean containsBook(Book b) {
-        for (int n = 0; n < this.books.length; n++) {
-            if (this.books[n].getAuthor().equals(b.getAuthor()) && this.books[n].getTitle().equals(b.getTitle())) {
+        for (int n = 0; n < bookCount; n++) {
+            if (books[n] != null &&
+                    books[n].getAuthor().equals(b.getAuthor()) &&
+                    books[n].getTitle().equals(b.getTitle())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean containsBook(String title) {
+        for (int n = 0; n < bookCount; n++) {
+            if (books[n] != null && books[n].getTitle().equals(title)) {
                 return true;
             }
         }
@@ -22,41 +38,20 @@ public class Library {
     }
 
     public boolean isBooksFull() {
-        for (int n = 0; n < this.books.length; n++) {
-            if (this.books[n] == null) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public Library() {
-        this.books = new Book[MAX_BOOKS];
+        return bookCount >= MAX_BOOKS;
     }
 
     public void addBook(Book b) {
-        try {
-            if (isBooksFull()) {
-                throw new IllegalStateException();
-            }
-
-            else if (containsBook(b)) {
-                throw new IllegalStateException();
-            }
-
-            else if (this.books[0] == null) {
-                this.books[0] = b;
-            }
-
-            books[getBooksIndex()] = b;
-
-            this.bookCount++;
-
-        } catch (IllegalStateException e) {
-            System.out.println("Error: " + e.getMessage());
+        if (isBooksFull()) {
+            throw new IllegalStateException("Library is full");
         }
 
+        if (containsBook(b)) {
+            throw new IllegalStateException("Book already exists in library");
+        }
+
+        books[bookCount] = b;
+        bookCount++;
     }
 
     public void addBook(String title, String author) {
@@ -65,22 +60,51 @@ public class Library {
     }
 
     public Book findBook(String title) {
-        Book resultFound = null;
+        for (int n = 0; n < bookCount; n++) {
+            if (books[n] != null && books[n].getTitle().equals(title)) {
+                return books[n];
+            }
+        }
+        throw new IllegalArgumentException("Book not found");
+    }
 
-        for (int n = 0; n < this.books.length; n++) {
-            if (this.books[n].getTitle().equals(title)) {
-                resultFound = books[n];
+    public boolean checkOutBook(String title, String studentName) {
+        Book book = findBook(title);
+        return book.checkOut(studentName);
+    }
+
+    public boolean returnBook(String title) {
+        Book book = findBook(title);
+
+        if (!book.isCheckedOut()) {
+            throw new IllegalStateException("Book is not checked out");
+        }
+
+        book.turnIn();
+        return true;
+    }
+
+    public Book[] getBooks() {
+        int numberOfValidBooks = 0;
+
+        for (int i = 0; i < books.length; i++) {
+            if (books[i] != null) {
+                numberOfValidBooks++;
             }
         }
 
-        if (resultFound == null) {
-            throw new IllegalStateException("Book not found, returning null");
+        Book[] validBooks = new Book[numberOfValidBooks];
+        int j = 0;
+
+        for (int i = 0; i < books.length; i++) {
+            if (books[i] != null) {
+                validBooks[j] = books[i];
+                j++;
+            }
         }
 
-        return resultFound;
+        return validBooks;
     }
-
-    
 
     public int getBookCount() {
         return bookCount;
@@ -89,6 +113,4 @@ public class Library {
     public int getMAX_BOOKS() {
         return MAX_BOOKS;
     }
-
-
 }
