@@ -21,13 +21,23 @@ public class Library {
         return false;
     }
 
+    public boolean isBooksFull() {
+        for (int n = 0; n < this.books.length; n++) {
+            if (this.books[n] == null) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public Library() {
         this.books = new Book[MAX_BOOKS];
     }
 
     public void addBook(Book b) {
         try {
-            if (this.books.length > MAX_BOOKS) {
+            if (isBooksFull()) {
                 throw new IllegalStateException();
             }
 
@@ -37,7 +47,6 @@ public class Library {
 
             else if (this.books[0] == null) {
                 this.books[0] = b;
-
             }
 
             books[getBooksIndex()] = b;
@@ -49,6 +58,29 @@ public class Library {
         }
 
     }
+
+    public void addBook(String title, String author) {
+        Book b = new Book(title, author);
+        addBook(b);
+    }
+
+    public Book findBook(String title) {
+        Book resultFound = null;
+
+        for (int n = 0; n < this.books.length; n++) {
+            if (this.books[n].getTitle().equals(title)) {
+                resultFound = books[n];
+            }
+        }
+
+        if (resultFound == null) {
+            throw new IllegalStateException("Book not found, returning null");
+        }
+
+        return resultFound;
+    }
+
+    
 
     public int getBookCount() {
         return bookCount;
