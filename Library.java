@@ -1,3 +1,5 @@
+import java.time.LocalDate;
+
 public class Library {
     private Book[] books;
     private int bookCount;
@@ -76,7 +78,7 @@ public class Library {
     public boolean returnBook(String title) {
         Book book = findBook(title);
 
-        if (!book.isCheckedOut()) {
+        if (!book.getIsCheckedOut()) {
             throw new IllegalStateException("Book is not checked out");
         }
 
@@ -106,6 +108,73 @@ public class Library {
         return validBooks;
     }
 
+    public Book[] findOverdueBooks() {
+        int count = 0;
+
+        for (int i = 0; i < bookCount; i++) {
+            Book b = books[i];
+            if (b.getIsCheckedOut() && b.getDueDate().isBefore(LocalDate.now())) {
+                count++;
+            }
+        }
+
+        Book[] overdueBooks = new Book[count];
+        int index = 0;
+
+        for (int i = 0; i < bookCount; i++) {
+            Book b = books[i];
+            if (b.getIsCheckedOut() && b.getDueDate().isBefore(LocalDate.now())) {
+                overdueBooks[index] = b;
+                index++;
+            }
+        }
+
+        return overdueBooks;
+    }
+
+    public boolean checkStudentOverdue(String studentName) {
+        if (studentName == null || studentName.isEmpty()) {
+            throw new IllegalArgumentException("line 137 you entered null/empty");
+        }
+
+        for (int i = 0; i < bookCount; i++) {
+            Book b = books[i];
+            if (b.getIsCheckedOut() && studentName.equals(b.getBorrower()) && b.getDueDate().isBefore(LocalDate.now())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public Book[] studentBooksOverdue(String studentName) {
+        if (studentName == null || studentName.isEmpty()) {
+            throw new IllegalArgumentException("you entered an empty/null string.");
+        }
+
+        int count = 0;
+
+        for (int i = 0; i < bookCount; i++) {
+            Book b = books[i];
+            if (b.getIsCheckedOut() && studentName.equals(b.getBorrower()) && b.getDueDate().isBefore(LocalDate.now())) {
+                count++;
+            }
+        }
+
+        Book[] overdueBooks = new Book[count];
+        int index = 0;
+
+        for (int i = 0; i < bookCount; i++) {
+            Book b = books[i];
+            if (b.getIsCheckedOut() && studentName.equals(b.getBorrower()) && b.getDueDate().isBefore(LocalDate.now())) {
+                overdueBooks[index] = b;
+                index++;
+            }
+        }
+
+        return overdueBooks;
+    }
+
     public int getBookCount() {
         return bookCount;
     }
@@ -113,4 +182,5 @@ public class Library {
     public int getMAX_BOOKS() {
         return MAX_BOOKS;
     }
+
 }
